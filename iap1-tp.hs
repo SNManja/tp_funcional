@@ -34,10 +34,32 @@ usuarioDePublicacion (u, _, _) = u
 likesDePublicacion :: Publicacion -> [Usuario]
 likesDePublicacion (_, _, us) = us
 
+--auxiliares
+longitud :: String -> Integer
+longitud [] = 0
+longitud n = if head (n) == ' ' then longitud (tail n) else 1 + longitud (tail n)
+
+usuarioValido :: Usuario -> Bool
+usuarioValido n | idDeUsuario n > 0 && longitud (nombreDeUsuario) > o = True
+                | otherwise = False
+
+noHayIdsRepetidos :: [Integer] -> [Integer] -> Integer -> Bool
+noHayIdsRepetidos x [] n = True
+noHayIdsRepetidos x y n | n == head x = False
+                        | null (tail x) == True && n == head x = False
+                        | otherwise = if null (tail x) == True then noHayIdsRepetidos (tail y) (tail y) (head y) else noHayIdsRepetidos (tail x) y n
+
+subUsuariosValidos :: RedSocial -> Bool
+subUsuariosValidos red n | noHayIdsRepetidos (tail ()) 
+
+--redValida :: RedSocial -> Bool 
+--redValida red | 
+
 -- Ejercicios
 
 nombresDeUsuarios :: RedSocial -> [String]
-nombresDeUsuarios = undefined
+nombresDeUsuarios red | null (usuarios (red)) == True = [] 
+                      | otherwise = [nombreDeUsuario (head (usuarios (red)))] ++ nombresDeUsuarios ((tail (usuarios (red))), relaciones (red), publicaciones (red))
 
 -- describir qué hace la función: .....
 amigosDe :: RedSocial -> Usuario -> [Usuario]
@@ -74,3 +96,4 @@ tieneUnSeguidorFiel = undefined
 -- describir qué hace la función: .....
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
 existeSecuenciaDeAmigos = undefined
+
