@@ -35,12 +35,17 @@ likesDePublicacion :: Publicacion -> [Usuario]
 likesDePublicacion (_, _, us) = us
 
 --auxiliares
+pertenece :: (Eq t) => t -> [t] -> Bool
+pertenece e [] = False
+pertenece e l | e == head l = True
+              | otherwise = pertenece e (tail l)
+
 longitud :: String -> Integer
 longitud [] = 0
 longitud n = if head (n) == ' ' then longitud (tail n) else 1 + longitud (tail n)
 
 usuarioValido :: Usuario -> Bool
-usuarioValido n | idDeUsuario n > 0 && longitud (nombreDeUsuario) > o = True
+usuarioValido n | idDeUsuario n > 0 && longitud (nombreDeUsuario n) > 0 = True
                 | otherwise = False
 
 noHayIdsRepetidos :: [Integer] -> [Integer] -> Integer -> Bool
@@ -49,12 +54,6 @@ noHayIdsRepetidos x y n | n == head x = False
                         | null (tail x) == True && n == head x = False
                         | otherwise = if null (tail x) == True then noHayIdsRepetidos (tail y) (tail y) (head y) else noHayIdsRepetidos (tail x) y n
 
-subUsuariosValidos :: RedSocial -> Bool
-subUsuariosValidos red n | noHayIdsRepetidos (tail ()) 
-
---redValida :: RedSocial -> Bool 
---redValida red | 
-
 -- Ejercicios
 
 nombresDeUsuarios :: RedSocial -> [String]
@@ -62,8 +61,19 @@ nombresDeUsuarios red | null (usuarios (red)) == True = []
                       | otherwise = [nombreDeUsuario (head (usuarios (red)))] ++ nombresDeUsuarios ((tail (usuarios (red))), relaciones (red), publicaciones (red))
 
 -- describir qué hace la función: .....
+esElPrimero :: Usuario -> Relacion -> Bool
+esElPrimero n h | n == fst h = True
+              | otherwise = False
+esElSegundo :: Usuario -> Relacion -> Bool
+esElSegundo n h | n == snd h = True
+              | otherwise = False
+
 amigosDe :: RedSocial -> Usuario -> [Usuario]
-amigosDe = undefined
+amigosDe red u | null (relaciones (red)) == True = []
+               | esElPrimero u (head (relaciones (red))) == True = [snd (head (relaciones (red)))] ++ amigosDe (usuarios(red),tail(relaciones(red)),publicaciones(red)) u
+               | esElSegundo u (head (relaciones (red))) == True = [fst (head (relaciones (red)))] ++ amigosDe (usuarios(red),tail(relaciones(red)),publicaciones(red)) u
+               | otherwise = amigosDe (usuarios(red),tail(relaciones(red)),publicaciones(red)) u
+
 
 -- describir qué hace la función: .....
 cantidadDeAmigos :: RedSocial -> Usuario -> Int
