@@ -34,13 +34,19 @@ usuarioDePublicacion (u, _, _) = u
 likesDePublicacion :: Publicacion -> [Usuario]
 likesDePublicacion (_, _, us) = us
 
---auxiliares
+
+
+----auxiliares----
 longitud :: String -> Integer
 longitud [] = 0
 longitud n = if head (n) == ' ' then longitud (tail n) else 1 + longitud (tail n)
 
+longitudLista :: [t] -> Integer
+longitudLista [] = 0
+longitudLista (x:xs) = 1 + longitudLista xs
+
 usuarioValido :: Usuario -> Bool
-usuarioValido n | idDeUsuario n > 0 && longitud (nombreDeUsuario) > o = True
+usuarioValido n | idDeUsuario n > 0 && longitud (nombreDeUsuario n) > 0 = True
                 | otherwise = False
 
 noHayIdsRepetidos :: [Integer] -> [Integer] -> Integer -> Bool
@@ -49,8 +55,10 @@ noHayIdsRepetidos x y n | n == head x = False
                         | null (tail x) == True && n == head x = False
                         | otherwise = if null (tail x) == True then noHayIdsRepetidos (tail y) (tail y) (head y) else noHayIdsRepetidos (tail x) y n
 
-subUsuariosValidos :: RedSocial -> Bool
-subUsuariosValidos red n | noHayIdsRepetidos (tail ()) 
+-- EX-2
+perteneceUsuario :: Integer -> (Integer, String) -> Bool
+perteneceUsuario n t | n == fst t = True
+                   | otherwise = False
 
 --redValida :: RedSocial -> Bool 
 --redValida red | 
@@ -67,11 +75,14 @@ amigosDe = undefined
 
 -- describir qué hace la función: .....
 cantidadDeAmigos :: RedSocial -> Usuario -> Int
-cantidadDeAmigos = undefined
+cantidadDeAmigos r u = longitudLista (amigosDe r u)
 
 -- describir qué hace la función: .....
 usuarioConMasAmigos :: RedSocial -> Usuario
-usuarioConMasAmigos = undefined
+usuarioConMasAmigos r = usuarioConMasAmigosAux (fst r) (snd r)
+
+usuarioConMasAmigosAux :: [Usuario] -> [Relaciones] -> Usuario
+usuarioConMasAmigosAux 
 
 -- describir qué hace la función: .....
 estaRobertoCarlos :: RedSocial -> Bool
