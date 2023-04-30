@@ -121,9 +121,16 @@ estaRobertoCarlos red | null (usuarios (red)) == True = False
 -- En el caso de que se cumpla, devuelve true. En el caso de que la lista de usuarios quede vacia antes de encontrar a alguien con mas de 1000000 de amigos,
 -- entonces significa que nadie tiene un numero mayor de amigos que esa cantidad, por lo tanto devuelve false.
 
-publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
-publicacionesDe = undefined
+publicacionde :: Publicacion -> Usuario -> Bool
+publicacionde pub u | x1 == u = True
+                    | otherwise = False
+                     where (x1,x2,x3) = pub
 
+publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
+publicacionesDe red u | null (publicaciones (red)) == True = []
+                      | otherwise = if publicacionde (head (publicaciones(red))) u == True
+                                        then [head (publicaciones(red))] ++ publicacionesDe (usuarios (red),relaciones (red),tail (publicaciones (red))) u
+                                            else publicacionesDe (usuarios (red),relaciones (red),tail (publicaciones (red))) u
 -- describir qué hace la función: .....
 publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
 publicacionesQueLeGustanA = undefined
