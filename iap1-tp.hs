@@ -131,11 +131,17 @@ publicacionesDe red u | null (publicaciones (red)) == True = []
                       | otherwise = if publicacionde (head (publicaciones(red))) u == True
                                         then [head (publicaciones(red))] ++ publicacionesDe (usuarios (red),relaciones (red),tail (publicaciones (red))) u
                                             else publicacionesDe (usuarios (red),relaciones (red),tail (publicaciones (red))) u
--- describir qué hace la función: .....
-publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
-publicacionesQueLeGustanA r u = publicacionesLikeadas (publicaciones r) u
+
+-- describir qué hace la función: La funcion publicacionesDe, va adquiriendo recursivamente todas las publicaciones de la lista [Publicacion] que esta 
+-- dentro de la red, y a traves de la subfuncion "publicacionde", se fija si el usuario guardado en "u" es autor de la publicion. En el caso de que lo sea,
+-- esa publicacion es agregada a una lista, en el caso de que no lo sea, no. La recursion termina cuando el conjunto de publicaciones queda vacio, devolviendo 
+-- como resultado la lista formada con l¿todas las publicaciones del usuario.
 
 trd (_,_,a) = a
+
+estaDentro :: Usuario -> [Usuario]  -> Bool
+estaDentro u [] = False
+estaDentro u (x:xs) = if u == x then True else estaDentro u xs
 
 publicacionesLikeadas :: [Publicacion] -> Usuario -> [Publicacion]
 publicacionesLikeadas [] _ = []
@@ -143,19 +149,44 @@ publicacionesLikeadas (x:xs) u = if estaDentro (u) (trd x)
                                      then [x] ++ publicacionesLikeadas xs u 
                                         else publicacionesLikeadas xs u
 
-estaDentro :: Usuario -> [Usuario]  -> Bool
-estaDentro u [] = False
-estaDentro u (x:xs) = if u == x then True else estaDentro u xs
+publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
+publicacionesQueLeGustanA red u = publicacionesLikeadas (publicaciones red) u
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Para implemetar esta funcion usamos 2 subfunciones. "estaDentro" analiza si un usuario "u" pertenece a una lista de usuarios,
+-- comparando recursivamente el usuario "u" con todos los usuarios de la lista de usuario. Si pertenece devuelve True, sino False. Luego creamos 
+-- "publicacionesLikeadas" la cual toma una lista de publicaciones, y llama recursivamente a todas las publicaciones que la componen. Luego toma el tercer
+-- elemento de la tripla de cada una(el tercer elemento del tipo publicaion es una lista de usuarios), y con la funcion "estaDentro", analiza si el usuario "u"
+-- pertenece a los usuarios que le dieron like a la publicacion o no. En el caso de que si pertenezca, agrega la publicacion a una lista, en caso contrario, no.
+-- La recursion termina cuando la lista de publicaciones queda vacia(ya se evaluaron todas las publicaciones en la lista), devolviendo la lista con todos las
+-- publicaciones likeadas por el usuario. Gracias a esto, la funcion "publicacionesQueLeGustanA", unicamente tiene que llamar a la funcion anterior, poniendo
+-- como valores de entrada a la lista de publicaciones de la red y al usuario a evaluar.
+
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
-lesGustanLasMismasPublicaciones = undefined
+lesGustanLasMismasPublicaciones red u1 u2 | publicacionesQueLeGustanA red u1 == publicacionesQueLeGustanA red u2 = True
+                                          | otherwise = False
+ 
+-- describir qué hace la función: esta funcion, analiza si la lista de publicaciones likeadas por el primer usuario es igual a la del segundo. Si lo es devuelve
+-- True, sino devuelve false.
+--   No hace falta analizar los casos en ue puedan tener los mismos elementos pero en distinto orden, ya que la funcion "publicacionesQueLeGustanA", va q recorrer
+-- las publicaciones de la reden el mismo orden tanto para u1 como para u2. De la misma forma, los elementos de ambas listas devueltas por la funcion mencionada,
+-- van a ser agregados en el mismo orden. 
 
--- describir qué hace la función: .....
+subTieneUnSeguidorFiel :: [Publicacion] -> [Usuario] -> Bool
+subTieneUnSeguidorFiel publicaciones usuarios | null usuarios == True = False
+                                              | publicacionesLikeadas publicaciones (head usuarios) == publicaciones = True
+                                              | otherwise = subTieneUnSeguidorFiel publicaciones (tail usuarios) 
+
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
-tieneUnSeguidorFiel = undefined
+tieneUnSeguidorFiel red u = subTieneUnSeguidorFiel (publicacionesDe red u) (trd (head (publicacionesDe red u)))
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Para esste ejercicio implementamos una subfuncion llamada "subTieneUnSeguidorFiel". Esta funcion toma como valor de entrada
+-- una lista de publicaciones y una lista de usuarios. Su funcion es analizar recursivamente si alguno de estos usuarios se encuentra en la lista de likes de 
+-- todas las publicaciones(para esto reutilizamos una subfuncion utilizada en el punto 7 que su funcion era ver si un usuario dio like a una publicacion). La
+-- recursion termina cuando todos los usuarios de la lista ya fueron analizados(la lista de usuarios queda vacia) y devuelve False si ninguno de estos cumple
+-- la condicion de estar en la lista de usuarios que dieron like de todas las publicaciones. En el caso de que alguno si lo cumpla, devuelve True.
+--   Lo que hace la funcion principal es llamar a esta subfuncion, pero los valores de entrada son todas las publicaciones del usuario a analizar, y todos los
+-- usuarios que le dieron like a su primera publicacion(de esta forma evitamos analizar usuarios innecesarios).
+
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
 existeSecuenciaDeAmigos = undefined
 
