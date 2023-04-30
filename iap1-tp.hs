@@ -44,7 +44,6 @@ longitudSinESpacios :: String -> Integer
 longitudSinESpacios [] = 0
 longitudSinESpacios n = if head (n) == ' ' then longitudSinESpacios (tail n) else 1 + longitudSinESpacios (tail n)
 
-
 usuarioValido :: Usuario -> Bool
 usuarioValido n | idDeUsuario n > 0 && longitudSinESpacios (nombreDeUsuario n) > 0 = True
                 | otherwise = False
@@ -81,7 +80,6 @@ amigosDe red u | null (relaciones (red)) == True = []
                | esElSegundo u (head (relaciones (red))) == True = [fst (head (relaciones (red)))] ++ amigosDe (usuarios(red),tail(relaciones(red)),publicaciones(red)) u
                | otherwise = amigosDe (usuarios(red),tail(relaciones(red)),publicaciones(red)) u
 
-
 -- describir qué hace la función: La funcion usa 2 subfunciones, las cuales se encargan de verificar si el usuario pertenece al primer o al segundo elemento 
 -- de la relacion. Esta logica de dividir la pertenencia, la utilizo en la funcion para saber si tengo que agregar a la lista de amigos al primer usuario
 -- de la relacion, o al segundo. Ya que la funcion, va llamando recursivamente a todos los elementos de la lista relaciones que hay en la red, de forma
@@ -114,7 +112,7 @@ usuarioConMasAmigos red = subUsuarioConMasAmigos (tail(usuarios (red)),relacione
 -- usuario que quedo almacenado en a.
 
 estaRobertoCarlos :: RedSocial -> Bool
-estaRobertoCarlos |
+estaRobertoCarlos = undefined
 
 -- describir qué hace la función: .....
 publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
