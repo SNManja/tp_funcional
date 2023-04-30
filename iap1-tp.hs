@@ -112,9 +112,15 @@ usuarioConMasAmigos red = subUsuarioConMasAmigos (tail(usuarios (red)),relacione
 -- usuario que quedo almacenado en a.
 
 estaRobertoCarlos :: RedSocial -> Bool
-estaRobertoCarlos = undefined
+estaRobertoCarlos red | null (usuarios (red)) == True = False
+                      | otherwise = if cantidadDeAmigos red (head (usuarios (red))) > 1000000 
+                                        then True 
+                                            else estaRobertoCarlos (tail(usuarios (red)),relaciones (red),publicaciones (red)) 
 
--- describir qué hace la función: .....
+-- describir qué hace la función: el ejercicio va chequeando reursivamente todos los usuarios en la red, analizando si alguno tiene mas de 1000000 de amigos.
+-- En el caso de que se cumpla, devuelve true. En el caso de que la lista de usuarios quede vacia antes de encontrar a alguien con mas de 1000000 de amigos,
+-- entonces significa que nadie tiene un numero mayor de amigos que esa cantidad, por lo tanto devuelve false.
+
 publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
 publicacionesDe = undefined
 
