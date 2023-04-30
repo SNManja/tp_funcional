@@ -133,7 +133,19 @@ publicacionesDe red u | null (publicaciones (red)) == True = []
                                             else publicacionesDe (usuarios (red),relaciones (red),tail (publicaciones (red))) u
 -- describir qué hace la función: .....
 publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
-publicacionesQueLeGustanA = undefined
+publicacionesQueLeGustanA r u = publicacionesLikeadas (publicaciones r) u
+
+trd (_,_,a) = a
+
+publicacionesLikeadas :: [Publicacion] -> Usuario -> [Publicacion]
+publicacionesLikeadas [] _ = []
+publicacionesLikeadas (x:xs) u = if estaDentro (u) (trd x)
+                                     then [x] ++ publicacionesLikeadas xs u 
+                                        else publicacionesLikeadas xs u
+
+estaDentro :: Usuario -> [Usuario]  -> Bool
+estaDentro u [] = False
+estaDentro u (x:xs) = if u == x then True else estaDentro u xs
 
 -- describir qué hace la función: .....
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
