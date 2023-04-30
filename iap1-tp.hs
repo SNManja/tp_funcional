@@ -34,18 +34,17 @@ usuarioDePublicacion (u, _, _) = u
 likesDePublicacion :: Publicacion -> [Usuario]
 likesDePublicacion (_, _, us) = us
 
-<<<<<<< HEAD
+
 --auxiliares
 pertenece :: (Eq t) => t -> [t] -> Bool
 pertenece e [] = False
 pertenece e l | e == head l = True
               | otherwise = pertenece e (tail l)
 
-=======
 
 
 ----auxiliares----
->>>>>>> 5b576f9472b17e9a5f4f596a99cad6ee14967af5
+
 longitud :: String -> Integer
 longitud [] = 0
 longitud n = if head (n) == ' ' then longitud (tail n) else 1 + longitud (tail n)
@@ -64,8 +63,7 @@ noHayIdsRepetidos x y n | n == head x = False
                         | null (tail x) == True && n == head x = False
                         | otherwise = if null (tail x) == True then noHayIdsRepetidos (tail y) (tail y) (head y) else noHayIdsRepetidos (tail x) y n
 
-<<<<<<< HEAD
-=======
+
 -- EX-2
 perteneceUsuario :: Integer -> (Integer, String) -> Bool
 perteneceUsuario n t | n == fst t = True
@@ -74,7 +72,7 @@ perteneceUsuario n t | n == fst t = True
 --redValida :: RedSocial -> Bool 
 --redValida red | 
 
->>>>>>> 5b576f9472b17e9a5f4f596a99cad6ee14967af5
+
 -- Ejercicios
 
 nombresDeUsuarios :: RedSocial -> [String]
@@ -97,15 +95,18 @@ amigosDe red u | null (relaciones (red)) == True = []
 
 
 -- describir qué hace la función: .....
-cantidadDeAmigos :: RedSocial -> Usuario -> Int
+cantidadDeAmigos :: RedSocial -> Usuario -> Integer
 cantidadDeAmigos r u = longitudLista (amigosDe r u)
 
 -- describir qué hace la función: .....
 usuarioConMasAmigos :: RedSocial -> Usuario
-usuarioConMasAmigos r = usuarioConMasAmigosAux (fst r) (snd r)
+usuarioConMasAmigos r = usuarioConMasAmigosAux (fst r) r [0, 0]
 
-usuarioConMasAmigosAux :: [Usuario] -> [Relaciones] -> Usuario
-usuarioConMasAmigosAux 
+{- Arreglar error de tipo -}
+usuarioConMasAmigosAux :: [Usuario] -> RedSocial-> [Integer] -> Integer
+usuarioConMasAmigosAux [] _ (maxID:maxCount) = maxID
+usuarioConMasAmigosAux (uh:ut) r (maxID:maxCount) | cantidadDeAmigos r uh > (head maxCount) = cantidadDeAmigosAux uh r [(fst uh), cantidadDeAmigos r uh]
+                                                    | otherwise = usuarioConMasAmigosAux ut r (maxID:maxCount)
 
 -- describir qué hace la función: .....
 estaRobertoCarlos :: RedSocial -> Bool
