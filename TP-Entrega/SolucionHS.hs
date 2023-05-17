@@ -87,20 +87,21 @@ longitudLista (x:xs) = 1 + longitudLista xs
 
 {-
     -- Ej-4 --
-    Para facilitar el trabajo en la auxiliar separe los usuarios y agregue una tupla para almacenar el usuario con mas amigos 
-    Podria haberlo hecho en una funcion sola seguramente pero priorice la legibilidad
-    utilizo las funciones de los anteriores ejercicios, cantidad de usuarios para checkear si supera la cantidad de amigos del usuario almacenado como el (maxUser,maxCount)
-    En caso que sea cierto reemplaza a este y sigue revisando toda la lista de usuarios. 
-    En un principio mi idea era que usuarioConMasAmigosAux solo tome los usuarios y el max, pero pero requiero la red entera (r) como para poder usar con facilidad las funciones ya desarrolladas
+     Esta funcion llama a una subfuncion, la cual empieza con 2 elementos(los usuarios de la red sin el primer usuario en "red", y 
+    el primer usuario de esta red en "a"). Esta subfuncion mide la cantidad de amigos del primer usuario de la lista de usuarios en red, y lo compara con a. Si el numero
+    de amigos de este usuario es mayor o igual al de a, entonces la funcion se vuelve a llamar a si misma con el tail de la lista de usuarios y con este nuevo usuario
+    reemplazando el antiguo valor de a. En el caso de que la cantidad de amigos del usuario sea menor, entonces la funcion se llama a si misma, pero a mantiene su
+    aniguo valor. De esta forma, en a siempre va a quedar guardado el usuario con mas amigos, y cuando la lista de usuarios quede vacia, la funcion devuelve el 
+    usuario que quedo almacenado en a.
 -}
+subUsuarioConMasAmigos :: RedSocial -> Usuario -> Usuario
+subUsuarioConMasAmigos red a | null (usuarios (red)) == True = a
+                             | otherwise = if cantidadDeAmigos red (head (usuarios (red))) >= cantidadDeAmigos red a 
+                                            then subUsuarioConMasAmigos (tail(usuarios (red)),relaciones (red),publicaciones (red)) (head (usuarios (red)))
+                                                else subUsuarioConMasAmigos (tail(usuarios (red)),relaciones (red),publicaciones (red)) a
+
 usuarioConMasAmigos :: RedSocial -> Usuario
-usuarioConMasAmigos r = usuarioConMasAmigosAux r (usuarios r) ((-1, "aaa"),(-1)) 
-
-usuarioConMasAmigosAux :: RedSocial -> [Usuario] -> (Usuario, Integer) -> Usuario 
-usuarioConMasAmigosAux r [] max = fst max
-usuarioConMasAmigosAux r (lh:lt) (maxUser,maxCount) | cantidadDeAmigos r lh > maxCount = usuarioConMasAmigosAux r lt (lh, cantidadDeAmigos r lh)
-                                                    | otherwise = usuarioConMasAmigosAux r lt (maxUser,maxCount)
-
+usuarioConMasAmigos red = subUsuarioConMasAmigos (tail(usuarios (red)),relaciones (red),publicaciones (red)) (head (usuarios (red)))
 {-
     -- Ej-5 --
     Este ejercicio se resuelve simplemente con el uso de la funcion usuarioConMasAmigos recien desarrollada y viendo al cantidadDeAmigos del mismo, lo podemos comparar con el valor numerico 1000000
@@ -111,29 +112,26 @@ estaRobertoCarlos rs | usuarios(rs) == [] = False
                      | otherwise = estaRobertoCarlos ((tail(usuarios(rs))), relaciones(rs), publicaciones(rs))
  
 {-
-    -- Ej-6 --
-    Como en los otro ejercicios, volvi a dar uso de una funcion auxiliar para facilitar la legibilidad
-    EN esta funcion separe las publicaciones, para luego con firstTerna, revisar el primer elemento de la terna de cada publicacion. Este elemento representa el usuario hizo la publicacion
-    De esta manera checkea si coincide el usuario que hizo la publicacion con el usuario que estamos analizando. En caso de que sea el mismo se agrega la publicacion a la lista que finalmente returnea 
+     -- Ej 6 --
+    La función principal extrae las lista de publicaciones de la red social para que pueda ser usada por su auxiliar.
+    La función auxiliar analiza recursivamente si el primer usuario de la lista de publicaciones es igual al ingresado por parametro hasta llegar al
+    final de la lista devolviendo una lista de publicaciones pertenecientes a dicho usuario.
 -}
-firstTerna (a,_,_) = a
-
 publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
 publicacionesDe r u = publicacionesDeAux (publicaciones r) u 
 
 publicacionesDeAux :: [Publicacion] -> Usuario -> [Publicacion]
 publicacionesDeAux [] u = []
-publicacionesDeAux (ph:pt) u | firstTerna ph == u = [ph] ++ publicacionesDeAux pt u
+publicacionesDeAux (ph:pt) u | usuarioDePublicacion(ph) == u = [ph] ++ publicacionesDeAux pt u
                              | otherwise = publicacionesDeAux pt u
-
-
 {-
-    -- Ej-7 --
+    
+    -- Ej 7 --
 
-    Con el Aux separo las publicaciones para trabajar con mas comodidad
-    Hice el predicado publicacionLikeada para verificar si una publicacion fuer likeada por el usuario
-    En caso que el usuario haya dado like a la publicacion, se agrega la publi a la lista y se siguen checkeado las de mas adelante
-    En caso que el usuario NO haya dado like, simplemente se sigue checkeando publi una por una, ignorando la misma
+    La función principal extrae la lista de publicaciones de la red social para que pueda ser usada por su auxiliar.
+    En la función auxiliar se determina recursivamente hasta llegar al final de la lista con la función publicacionLikeada si el usuario
+    ingresado por parametro pertenece a la lista de likes de la primera publicación devolviendo una lista con las publicaciones que le gustan
+    al usuario ingresado.
 
 -}
 publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
@@ -152,9 +150,9 @@ publicacionLikeada (x:xs) u | x == u = True
 {-
     -- Ej-8 --
 
-    Utiliza la funcion del ej 7 y compara, me preocupaba en caso que no esten igual sorteadas
-    pero como las publicaciones las va procesando y agregando en orden. Si son las mismas, no tendria que haber problema con el orden de las mismas
-    ya que si a ambos usuarios les gustan las mismas publicaciones publicacionesQueLeGustanA las va agregando a la lista en mismo orden
+        En esta funcion, reutilizamos la funcion del punto anterior para ver que el conjunto de publicaciones que les gustan a los dos usuarios 
+    sean iguales. Debido a que recorremos el conjunto de publicaciones de la red en el mismo orden para los dos usuarios, si les gustan
+    las mismas publicaciones, entonces los conjuntos de publicaciones gustadas van a ser iguales.
 -}
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
 lesGustanLasMismasPublicaciones r u1 u2 = (publicacionesQueLeGustanA r u1 == publicacionesQueLeGustanA r u2) && (publicacionesQueLeGustanA r u1 /= [])
@@ -162,15 +160,13 @@ lesGustanLasMismasPublicaciones r u1 u2 = (publicacionesQueLeGustanA r u1 == pub
 
 {-
     -- Ej-9 --
-    Tiene un seguidor fiel checkea si el usuario tiene un fan (Osea, alguien que le likea todas las publicaciones)
-
-    Primero hago un auxiliar que me haga mas facil trabajar con la lista de usuarios totales y de publicaciones de nuestro usuario estrella (Llamemoslo u* para la explicacion)
-    La Auxiliar en este caso pasa por cada uno de los usuarios de la red y con ayuda de likeoTodas checkeando si hay uno de estos que dio like a todas las publicaciones
-
-    LikeoTodas tiene la lista de publicaciones y el usuario que queremos ver. Para que quede claro, el usuario que entra aca es el que vamos a revisar si es fan o no y las publicaciones son las de u*
-    Una vez encuentra un usuario que likeoTodas devuelve True, devolviendo True en la auxiliar y por ende tambien en la funcion principal.
-
-    En caso que ningun likeoTodas se cumpla, directamente cuando se acaban los usuarios la auxiliar me devuelve False
+        en esta funcion, utilizamos 2 subfunciones auxiliares. "tieneUnSeguidorFielAux" recibe una lista de usuarios y una lista de publicaciones,
+    y pasando recursivamente por todos los usuarios, verifica que alguno haya dado like a todo el conjunto de publicaciones, a traves
+    de la otra subfuncion llamada "likeoTodas". Esta segunda subfuncion, recibe un conjunto de publicaciones y un usuarios, y se encarga de
+    pasar por toda la lista de publicaciones recursivamente, verificando que el usuario haya dado like a todas las publicaciones.
+        Gracias a estas dos subfunciones, la funcion principal unicamente tiene que llamar a "tieneUnSeguidorFielAux", dandole como
+    valores de entrada los usuarios de la red y las publicaciones del usuario a analizar(esto lo hacemos con la funcion "publicacionesDe"
+    que hicimos en el punto 6).
 
 -}
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
