@@ -1,6 +1,7 @@
 module SolucionHS where
 
 
+
 -- Completar con los datos del grupo
 --
 -- Nombre de Grupo: xx
@@ -189,25 +190,36 @@ likeoTodas (ph:pt) u | publicacionLikeada (likesDePublicacion ph) u = likeoTodas
 {-
     -- Ej-10 --
 
-    la res es true si una secuencia de usuarios US tamano 2 o mayor, empieza con u1, termina con u2, son de la red y cumplem con cadenaDeAmigos (us,red)
+        El ejercicio esta planteado desde la perspectiva de que las amistades se abren como un arbol.
+        Este entraria en loop eterno si es que no tenemos una lista donde guardar los elementos del arbol que ya fueron analizados. Para eso se usa la variable vistos.
 
-    cadenaDeAmigos (us:seq[Usuario], red:RedSocial) {
-        todo x -> (0 <= x < us.length -1 -> RelacionadosDirecto(us[x],us[x+1],red))
-    }
+        BuscoPor checkea si es la lista de amigos de un usuario cualquiera esta el que queremos encontrar (el que entra en existeSecuenciaDeAmigos como u2, llamemoslo u* para esta explicacion)
+        En caso que no encuentre al u*, se llamda a "buscoPorCadaAmigo" sacando a los elementos ya vistos de la lista de amigos
 
-    RelacionadosDirecto (u1: Usuario, u2: Usuario, red: RedSocial){
-        Pertenece ((u1,u2),Relaciones(Red)) U Pertenece ((u2,u1), Relaciones(Red))
-    }
+        buscoPorCadaAmigo tiene como fin agarrar una lista de amigos y hacer que buscoPor analice los amigos de cada amigo de la lista de amigos. 
+        Podemos ver que en caso de que no de falso, el otherwise nos manda al llamado de buscoPor (analizando los amigos de cada amigo de la lista de amigos) 
+        y a su ves se llama a si misma, conectada por un ||, de esta manera se llamada recursivamente con cada elemento de la lista (ah:at) que seria la lista amigos.
 
-    Como lo puedo pensar?
-    Puedo checkear la lista de amigos de u1 y u2, de ahi ver quienes son amigos de los de esa lista hasta encontrar 
+        Como todo esta conectado por un || en caso que nos de TRUE en solo un procedimiento, nos da TRUE todo el statement.
+        En resumen podriamos decir que buscoPor es la funcion encargada de analizar cada caso y buscoPorCadaAmigo la que se encarga de llamar recursivamente cada caso (atravezar todo el arbol)
+
+        Luego se peude ver que esta la listaASinB y pertenece
+        Estas funciones me permiten:
+        - listaASinB : Saca a los elementos de la lista B que esten tambien en la lista A -> por ej 
+            -- A = [1,2,3,4] ; B = [1,4] -> listaASinB A B  -> [2,3]
+            El fin de esta funcion en el ejercicio es poder eliminar los usuarios en la lista de vistos (B) de los amigos que vamos a analizar (A)
+            Gracias a esta funcion no se hace infinito el llamado recursivo
+        - pertenece : Checkea si un usuario pertenece a una lista especifica
+            -- u = (20, "juan") lista = [(20, "juan"), (21, "gustavo")] -> pertenece u lista -> True
+            Con este predicado checkeamos si en buscoPor se encontro al u*, devolviendo true en el caso que se cumpla
+
 -}
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
-existeSecuenciaDeAmigos r u1 u2 =  buscoPor r u1 (amigosDe r u2) [u2] || buscoPor r u2 (amigosDe r u1) [u1]
+existeSecuenciaDeAmigos r u1 u2 =  buscoPor r u1 (amigosDe r u2) [u2] 
 
 buscoPor :: RedSocial -> Usuario -> [Usuario] -> [Usuario] -> Bool
 buscoPor r u amigos vistos | listaASinB amigos vistos == [] = False
-                           | pertenece u amigos = True
+                           | pertenece u amigos = True 
                            | otherwise = buscoPorCadaAmigo r u (listaASinB amigos vistos) (vistos)
 
 buscoPorCadaAmigo :: RedSocial ->  Usuario -> [Usuario] -> [Usuario] -> Bool
@@ -226,7 +238,7 @@ pertenece t (x:xs) | x == t = True
                    | otherwise = pertenece t xs
 
 
--- Estos son predicados de la definicion del TP no se si van a servir 
+-- Estos son predicados utilizados meramente para pensar el ejercicio. Pueden ser eliminados y todo funcionaria bien.
 cadenaDeAmigos :: RedSocial -> [Usuario] -> Bool
 cadenaDeAmigos r (uh:ut) | null ut  || null (uh:ut)= True
                          | relacionadosDirecto r uh (head ut) = cadenaDeAmigos r ut
