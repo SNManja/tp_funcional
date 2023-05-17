@@ -72,13 +72,18 @@ tests = test [
 
 
     -- es esta funcion nos interesan 5 casos:
-    -- !   el caso en el que a los dos usuarios les gustan las mismas publicaciones
-    -- !   el caso en el que a los dos usuarios les gustan publicaciones diferentes
+    --   el caso en el que a los dos usuarios les gustan las mismas publicaciones
+    --   el caso en que a dos usuarios le gustan ALGUNAS publicaciones en comun
+    --   el caso en el que a los dos usuarios les gustan publicaciones diferentes
     -- !   el caso en el que al primero usuario les gustan publicaciones y al segundo ninguna
     -- !   el caso en el que al segundo usuario le gustan publicaciones y al primero ninguna
     -- !   el caso en el que al primer usuario no le gusta ninguna publicacion y al segundo tampoco
-    " lesGustanLasMismasPublicaciones True" ~: (lesGustanLasMismasPublicaciones redB usuario1 usuario3) ~?= True,
-    " lesGustanLasMismasPublicaciones False" ~: (lesGustanLasMismasPublicaciones redA usuario1 usuario2) ~?= False,
+    " lesGustanLasMismasPublicaciones DosUsuariosMismosLikes" ~: lesGustanLasMismasPublicaciones redLGMP usuariosD_1 usuariosD_2 ~?= True,
+    " lesGustanLasMismasPublicaciones NoTodoLikeEnComun" ~: (lesGustanLasMismasPublicaciones redA usuario1 usuario2) ~?= False,
+    " lesGustanLasMismasPublicaciones TodoLikeDiferente" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_5 usuariosD_6) ~?= False,
+    " lesGustanLasMismasPublicaciones U1noLikea" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_8 usuariosD_1) ~?= False,
+    " lesGustanLasMismasPublicaciones U2noLikea" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_1 usuariosD_8) ~?= False,
+    " lesGustanLasMismasPublicaciones U1niU2Likean" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_8 usuariosD_9) ~?= False,
 
 
     -- en esta funcion no interesan 4 casos:
@@ -226,4 +231,22 @@ redRobertoCarlos10 = (usuariosD,relacionesD10,[])
 redSeguidorFielSinLikes = (usuariosD,relacionesD10, [((1,"a"),"test",[])])
 
 
+
+-- Estas son una serie de redes armadas especificamente para el ej "leGustanLasMismasPublicaciones"
+
+publicacionD_1 = (usuariosD_1,"test1",[usuariosD_2,usuariosD_1])
+publicacionD_2 = (usuariosD_2,"test2",[usuariosD_1,usuariosD_2])
+publicacionD_3 = (usuariosD_3,"test3",[usuariosD_1,usuariosD_2])
+
+publicacionD_4 = (usuariosD_4,"test4",[usuariosD_5])
+publicacionD_5 = (usuariosD_4,"test5",[usuariosD_6])
+
+
+
+
+publicacionesLGMPTrue = [publicacionD_1,publicacionD_2,publicacionD_3]--usuario1 y usuario2
+publicacionesLGMPDifPublis = [publicacionD_4,publicacionD_5]
+
+
+redLGMP = (usuariosD, relacionesD10, publicacionesLGMPTrue ++ publicacionesLGMPDifPublis) 
 

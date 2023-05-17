@@ -157,7 +157,7 @@ publicacionLikeada (x:xs) u | x == u = True
     ya que si a ambos usuarios les gustan las mismas publicaciones publicacionesQueLeGustanA las va agregando a la lista en mismo orden
 -}
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
-lesGustanLasMismasPublicaciones r u1 u2 = publicacionesQueLeGustanA r u1 == publicacionesQueLeGustanA r u2 
+lesGustanLasMismasPublicaciones r u1 u2 = (publicacionesQueLeGustanA r u1 == publicacionesQueLeGustanA r u2) && (publicacionesQueLeGustanA r u1 /= [])
 
 
 {-
