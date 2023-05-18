@@ -105,7 +105,7 @@ usuarioConMasAmigos :: RedSocial -> Usuario
 usuarioConMasAmigos red = subUsuarioConMasAmigos (tail(usuarios (red)),relaciones (red),publicaciones (red)) (head (usuarios (red)))
 {-
     -- Ej-5 --
-    Este ejercicio se resuelve simplemente con el uso de la funcion usuarioConMasAmigos recien desarrollada y viendo al cantidadDeAmigos del mismo, lo podemos comparar con el valor numerico 1000000
+    Este ejercicio se resuelve simplemente con el uso de la funcion usuarioConMasAmigos recien desarrollada y viendo al cantidadDeAmigos del mismo, lo podemos comparar con el valor numerico 10
 -}
 estaRobertoCarlos :: RedSocial -> Bool
 estaRobertoCarlos rs | usuarios(rs) == [] = False
