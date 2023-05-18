@@ -75,9 +75,9 @@ tests = test [
     --   el caso en el que a los dos usuarios les gustan las mismas publicaciones
     --   el caso en que a dos usuarios le gustan ALGUNAS publicaciones en comun
     --   el caso en el que a los dos usuarios les gustan publicaciones diferentes
-    -- !   el caso en el que al primero usuario les gustan publicaciones y al segundo ninguna
-    -- !   el caso en el que al segundo usuario le gustan publicaciones y al primero ninguna
-    -- !   el caso en el que al primer usuario no le gusta ninguna publicacion y al segundo tampoco
+    --   el caso en el que al primero usuario les gustan publicaciones y al segundo ninguna
+    --   el caso en el que al segundo usuario le gustan publicaciones y al primero ninguna
+    --   el caso en el que al primer usuario no le gusta ninguna publicacion y al segundo tampoco
     " lesGustanLasMismasPublicaciones DosUsuariosMismosLikes" ~: lesGustanLasMismasPublicaciones redLGMP usuariosD_1 usuariosD_2 ~?= True,
     " lesGustanLasMismasPublicaciones NoTodoLikeEnComun" ~: (lesGustanLasMismasPublicaciones redA usuario1 usuario2) ~?= False,
     " lesGustanLasMismasPublicaciones TodoLikeDiferente" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_5 usuariosD_6) ~?= False,

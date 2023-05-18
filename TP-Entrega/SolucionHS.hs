@@ -4,11 +4,12 @@ module SolucionHS where
 
 -- Completar con los datos del grupo
 --
--- Nombre de Grupo: xx
+-- Nombre de Grupo: Holy Haskell
 -- Integrantes: 
-  -- Cristal
-  -- Luciano Chiariza
-  -- ? 
+  -- Cristal Abigail Rojas  (cristalabigailrojas@gmail.com) 1667/21
+  -- Luciano Chiarizia (chiarizialuciano@gmail.com) LU: 757/22
+  -- Santiago Manjarin (santiagomanjarin111@gmail.com) LU: 616/22
+
 
 type Usuario = (Integer, String) -- (id, nombre)
 type Relacion = (Usuario, Usuario) -- usuarios que se relacionan
@@ -105,7 +106,9 @@ usuarioConMasAmigos :: RedSocial -> Usuario
 usuarioConMasAmigos red = subUsuarioConMasAmigos (tail(usuarios (red)),relaciones (red),publicaciones (red)) (head (usuarios (red)))
 {-
     -- Ej-5 --
-    Este ejercicio se resuelve simplemente con el uso de la funcion usuarioConMasAmigos recien desarrollada y viendo al cantidadDeAmigos del mismo, lo podemos comparar con el valor numerico 10
+    Checkea que haya usuarios en rs
+    En caso que hayan usuarios, checkea la cantidad de amigos en el primer usuario. Si supera 10 amigos devuelve True
+    Si no se cumplen estos casos, el otherwise llama denuevo a la funcion cortando la head de la lista de usuarios.
 -}
 estaRobertoCarlos :: RedSocial -> Bool
 estaRobertoCarlos rs | usuarios(rs) == [] = False
@@ -237,12 +240,3 @@ pertenece _ [] = False
 pertenece t (x:xs) | x == t = True
                    | otherwise = pertenece t xs
 
-
--- Estos son predicados utilizados meramente para pensar el ejercicio. Pueden ser eliminados y todo funcionaria bien.
-cadenaDeAmigos :: RedSocial -> [Usuario] -> Bool
-cadenaDeAmigos r (uh:ut) | null ut  || null (uh:ut)= True
-                         | relacionadosDirecto r uh (head ut) = cadenaDeAmigos r ut
-                         | otherwise = False
-
-relacionadosDirecto :: RedSocial -> Usuario -> Usuario ->  Bool
-relacionadosDirecto r u1 u2 = pertenece u1 (amigosDe r u2)
