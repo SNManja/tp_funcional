@@ -51,12 +51,19 @@ likesDePublicacion (_, _, us) = us
     explicada anteriormente.
 -}
 nombresDeUsuarios :: RedSocial -> [String]
-nombresDeUsuarios r = nombresDeUsuariosAux (usuarios r)
+nombresDeUsuarios r = eliminarRepetidos (nombresDeUsuariosAux (usuarios r))
 
 nombresDeUsuariosAux :: [Usuario] -> [String]
 nombresDeUsuariosAux [] = []
 nombresDeUsuariosAux (x:xs) = [nombreDeUsuario x] ++ nombresDeUsuariosAux xs
 
+eliminarRepetidos :: [String] -> [String]
+eliminarRepetidos [] = []
+eliminarRepetidos (x:xs) = if existe x xs then eliminarRepetidos xs else [x] ++ eliminarRepetidos xs
+
+existe :: String -> [String] -> Bool
+existe h [] = False
+existe h (x:xs) = if h == x then True else existe h xs
 
 {-
     -- Ej-2 --
@@ -159,7 +166,7 @@ publicacionLikeada (x:xs) u | x == u = True
     las mismas publicaciones, entonces los conjuntos de publicaciones gustadas van a ser iguales.
 -}
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
-lesGustanLasMismasPublicaciones r u1 u2 = (publicacionesQueLeGustanA r u1 == publicacionesQueLeGustanA r u2) && (publicacionesQueLeGustanA r u1 /= [])
+lesGustanLasMismasPublicaciones r u1 u2 = (publicacionesQueLeGustanA r u1 == publicacionesQueLeGustanA r u2) 
 
 
 {-

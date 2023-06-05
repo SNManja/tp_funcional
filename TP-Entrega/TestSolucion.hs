@@ -10,9 +10,10 @@ import SolucionHS
 main = runTestTT tests
 
 tests = test [
-    -- Los casos que me interesan testear son 2: Cuando tengo Usuarios en mi Red y cuando no
+    -- Los casos que me interesan testear son 2: Cuando tengo Usuarios en mi Red, cuando no y cuando repiten
     " nombresDeUsuarios Default" ~: (nombresDeUsuarios redA) ~?= ["Solin solito","Juan","Natalia","Pedro","Mariela"],
     " nombresDeUsuarios RedVacia" ~: (nombresDeUsuarios redSinUsuarios) ~?= [],
+    " nombresDeUsuarios redUsuariosRepetidos" ~: (nombresDeUsuarios redSocialRepes) ~?= ["juan"],
 
     {-
         los casos que nos interesan son 3: 
@@ -83,7 +84,7 @@ tests = test [
     " lesGustanLasMismasPublicaciones TodoLikeDiferente" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_5 usuariosD_6) ~?= False,
     " lesGustanLasMismasPublicaciones U1noLikea" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_8 usuariosD_1) ~?= False,
     " lesGustanLasMismasPublicaciones U2noLikea" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_1 usuariosD_8) ~?= False,
-    " lesGustanLasMismasPublicaciones U1niU2Likean" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_8 usuariosD_9) ~?= False,
+    " lesGustanLasMismasPublicaciones U1niU2Likean" ~: (lesGustanLasMismasPublicaciones redLGMP usuariosD_8 usuariosD_9) ~?= True,
 
 
     -- en esta funcion no interesan 4 casos:
@@ -250,3 +251,14 @@ publicacionesLGMPDifPublis = [publicacionD_4,publicacionD_5]
 
 redLGMP = (usuariosD, relacionesD10, publicacionesLGMPTrue ++ publicacionesLGMPDifPublis) 
 
+
+-- Utilizada para testear los nombres repetidos en el ejercicio 1
+usuariosRepes_1 = (20, "juan")
+usuariosRepes_2 = (21, "juan")
+usuariosRepes_3 = (22, "juan")
+
+usuariosRepes = [usuariosRepes_1, usuariosRepes_2, usuariosRepes_3]
+
+relacionesRepes = [((21,"juan"),(20,"juan")), ((20,"juan"),(22,"juan"))]
+
+redSocialRepes = (usuariosRepes,relacionesRepes,[((20,"juan"),"holamundo", [(21,"juan")])])
